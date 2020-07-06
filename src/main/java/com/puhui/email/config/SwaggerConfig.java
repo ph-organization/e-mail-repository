@@ -23,6 +23,48 @@ import java.util.ArrayList;
 public class SwaggerConfig {
 
 
+    //配置swagger的docket的bean实例
+    @Bean
+    public Docket docket1(Environment environment){
+//        //设置要显示的swagger环境
+//        Profiles profiles = Profiles.of("dev");
+//        //通过environment.acceptsProfiles判断是否处在自己设定的环境当中
+//        boolean flag = environment.acceptsProfiles(profiles);
+
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(ylhApiInfo())
+                .groupName("杨利华")
+                //enable(false) 关闭swagger 不能在浏览器中访问，默认是启动的（true）
+                 .enable(true)
+                .select()
+                //RequestHandlerSelectors配置要扫描接口的方式
+                //basePackage("包名")：指定要扫描的包
+                //any：扫描全部
+                //none:不扫描
+                //withClassAnnotation(RestController.class) 扫描类上的注解
+                //withMethodAnnotation(GetMapping.class) 扫描方法上的注解
+                .apis(RequestHandlerSelectors.basePackage("com.puhui.email.controller"))
+                //paths() 过滤某某路径（让过滤的路径通过）
+                .paths(PathSelectors.ant("/mailUser/**"))
+                .build();
+    }
+
+    //配置swagger信息apiInfo
+    public ApiInfo ylhApiInfo(){
+        //作者信息
+        Contact contact= new Contact("杨利华", "http://www.baidu.com", "Y2235662296@163.com");
+        return new ApiInfo(
+                "杨利华的swaggerAPI文档",
+                "这狗东西居然写api文档了",
+                "1.0",
+                "http://www.baidu.com",
+                contact,
+                "Apache 2.0",
+                "http://www.apache.org/licenses/LICENSE-2.0",
+                new ArrayList());
+    }
+
+
     //注入一个docket对象,配置bean实例
     public Docket getDocket01(){
         return new Docket(DocumentationType.SWAGGER_2).groupName("杨利华");
