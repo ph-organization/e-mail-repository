@@ -3,15 +3,18 @@ package com.puhui.email;
 
 
 import com.puhui.email.entity.MailUser;
+import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.RSAEncryptUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.sound.midi.Soundbank;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLOutput;
 import java.util.HashMap;
@@ -21,7 +24,14 @@ import java.util.Map;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class EMailApplicationTests {
-
+    @Autowired
+    private MailUserMapper mailUserMapper;
+    //配置文件中的公钥
+    @Value ("${rsa.publicKey}")
+    private String publicKey;
+    //配置文件中的私钥
+    @Value("${rsa.privateKey}")
+    private String privateKey;
 
     /**
      * 邹玉玺
@@ -81,5 +91,20 @@ public class EMailApplicationTests {
         System.out.println(
               "=================" + mailUserService.queryMailUser(2)
         );
+    }
+
+    /**
+     * 根据姓名查询用户
+     */
+    @Test
+    public void getByName() throws Exception {
+        //查询所有
+        List<MailUser> mailUsers = mailUserService.queryAllMailUser();
+        for (MailUser user:mailUsers) {
+            if (RSAEncryptUtil.decrypt(user.getName(), privateKey).toString().equals("zyx")){
+                System.out.println(user);
+            }
+        }
+
     }
 }

@@ -13,7 +13,7 @@ public interface MailService {
      * @param topic    主题
      * @param content    内容
      */
-    public void sendSimpleMail(String to, String topic, String content);
+    public void sendSimpleMail(String to, String topic, String content) throws Exception;
 
     /**
      * 发送带附件的邮件

@@ -41,6 +41,7 @@ public class MailController {
             @ApiImplicitParam (name = "content", value = "邮件内容", required = true, dataType = "String", paramType = "query")})
     @GetMapping ("/mail/sendMail")
     public BaseResult sendSimpleMail(String to, String topic, String content) {
+
         try {
             //获取一个随机的标识码，用于标记该用户邮箱
             String code = CommonUtil.getRandomNum();
@@ -50,12 +51,11 @@ public class MailController {
                 BaseResult result = new BaseResult("1", "30分钟内只能发送一次");
                 return result;
             }
-            System.out.println(code);
-            //30分钟内只能发送一次
-            redisTemplate.opsForValue().set(to,code,30, TimeUnit.MINUTES);
-
+            //缓存中没有标识符   可以发送邮件
             mailService.sendSimpleMail(to, topic, content);
             BaseResult result = new BaseResult("0", "发送成功");
+            // 发送成功后将标识码存入redis 30分钟内只能发送一次
+            redisTemplate.opsForValue().set(to,code,30, TimeUnit.MINUTES);
             return result;
         } catch (Exception e) {
             BaseResult result = new BaseResult("1", "发送失败");
