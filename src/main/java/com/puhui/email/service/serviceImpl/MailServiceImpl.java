@@ -27,6 +27,12 @@ public class MailServiceImpl implements MailService {
     // 配置文件中的发送者
     @Value ("${mail.fromMail.sender}")
     private String sender;
+    //配置文件中的公钥
+    @Value("${rsa.publicKey}")
+    private String publicKey;
+    //配置文件中的私钥
+    @Value("${rsa.privateKey}")
+    private String privateKey;
 
     @Override
     public void sendSimpleMail(String to, String topic, String content) {
