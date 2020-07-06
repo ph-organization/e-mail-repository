@@ -6,6 +6,7 @@ import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.RSAEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,19 +31,23 @@ public class MailUserServiceImpl implements MailUserService {
 
     //创建对象用于加密保存数据/解密修改数据
     MailUser user=new MailUser();
+//
+//    //用于封装随机产生的公钥与私钥
+//    Map<Integer, String> keyMap = new HashMap<Integer, String>();
 
-    //用于封装随机产生的公钥与私钥
-    Map<Integer, String> keyMap = new HashMap<Integer, String>();
+    //公钥加密
+    @Value("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHH1oreEIgmlTlKpJJt/gA1FiX6DNbcpHtdeQEvdTHVRUGnZuVxMdNPXG9LiHOGrSjHBjjg4YGfa+Q0nZAnUm1zGul5xTDBrawA+9Qrcp44Hd/6KpHAUq7rmZUGS8TSGwlHF6qyL4x5IH/py85FPSLGbYAOdt6Th3lAwZCXAx0aQIDAQAB")
+    public String publickey;
+
+    //私钥解密
+    @Value("MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAIcfWit4QiCaVOUqkkm3+ADUWJfoM1tyke115AS91MdVFQadm5XEx009cb0uIc4atKMcGOODhgZ9r5DSdkCdSbXMa6XnFMMGtrAD71Ctynjgd3/oqkcBSruuZlQZLxNIbCUcXqrIvjHkgf+nLzkU9IsZtgA523pOHeUDBkJcDHRpAgMBAAECgYB1SknDIgiEtHKs2l9RjlfAoJKmifDKmJEDRyo+02k3/iraK0U6pC08ZvGr/bdqaNQUIfeYxjo4uDEFzSrIu7+Wwgr3HCbHfEV7DIOe5LRDH1bUzUoyKIMKSoMA1A7PaDTSAx/0Xh3D+gNzGqN0tveEueB0ur5zfYY5AbXHa/loAQJBANK1b51MGRVLVf3M18K/eTzzGupQggsNNrFTBM/qzva276ybiOUIpz8AsQxEEETj6N+SygRF8wWNdgy15bQHCWECQQCkKqsvnvV1YAO4vUugwnVO8WvsUaK/yLiWoUfpCe4sm7XZz6B55NY/qX8ke7RgQ6E/sb6Hb2A0d9oHNCHlQSAJAkB44BSzi+An0xv1iPmNgwIt8NhT6vNvG5lwiEuOawlnhvJfdqpFmX04K1Fl0/XxTz1cZHz3jpknakt6Zy7q486BAkEAj/RKgEunefFj0g9LzgA21a6lsGg1im78TjnG0PbAP6Wa5RBH7BtaNCDxOJCxLuie8Tdvl1t2xQuDyGVSg7GD4QJBAJDCgTqBZxEeNpyYV/Fwdalqxuqzgup9H1sl6ORBMtnq9ljkePD2GwE+X1NUhIrdeyMr/5r1eHVc0ySm4d/3KoE=")
+    public String privatekey;
 
     //添加用户
     @Override
     @CachePut(value = "mailuser",key = "#mailUser.id.toString()")
     public void addMailUser(MailUser mailUser) throws Exception{
 
-        ////生成公钥私钥
-        RSAEncryptUtil.genKeyPair(keyMap);
-        //公钥加密
-        String publickey = keyMap.get(0);
 
         user.setId(mailUser.getId());
         //加密
@@ -61,14 +66,6 @@ public class MailUserServiceImpl implements MailUserService {
     @Override
     @CacheEvict(value = "mailuser",key = "#mailUser.id.toString()")
     public void updateMailUser(MailUser mailUser) throws Exception {
-
-//        SimpleDateFormat f=new SimpleDateFormat("yyy-MM-dd");
-        ////生成公钥私钥
-        RSAEncryptUtil.genKeyPair(keyMap);
-        //公钥加密
-        String publickey = keyMap.get(0);
-        //私钥解密
-        String privatekey = keyMap.get(1);
 
         List<MailUser> userList=queryAllMailUser();
 
