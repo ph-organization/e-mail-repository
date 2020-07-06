@@ -2,11 +2,9 @@ package com.puhui.email.service.serviceImpl;
 
 
 import com.puhui.email.entity.MailUser;
-
 import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
-import com.puhui.email.util.RSAEncryptUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.util.List;
 
 /**
  * @author: 邹玉玺

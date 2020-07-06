@@ -8,11 +8,14 @@ import com.puhui.email.util.RSAEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:  邮件用户crud实现
@@ -26,9 +29,6 @@ public class MailUserServiceImpl implements MailUserService {
     @Autowired
     MailUserMapper mailUserMapper;
 
-    //创建对象用于加密保存数据/解密修改数据
-    MailUser user=new MailUser();
-
     //公钥加密
     @Value("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHH1oreEIgmlTlKpJJt/gA1FiX6DNbcpHtdeQEvdTHVRUGnZuVxMdNPXG9LiHOGrSjHBjjg4YGfa+Q0nZAnUm1zGul5xTDBrawA+9Qrcp44Hd/6KpHAUq7rmZUGS8TSGwlHF6qyL4x5IH/py85FPSLGbYAOdt6Th3lAwZCXAx0aQIDAQAB")
     public String publickey;
@@ -40,23 +40,28 @@ public class MailUserServiceImpl implements MailUserService {
     //添加用户
     @Override
     public void addMailUser(MailUser mailUser) throws Exception{
-        user.setId(mailUser.getId());
-        //加密
-        user.setName(RSAEncryptUtil.encrypt(mailUser.getName(),publickey));
-        user.setSex(mailUser.getSex());
-        user.setEmail(RSAEncryptUtil.encrypt(mailUser.getEmail(),publickey));
-        user.setPwd(RSAEncryptUtil.encrypt(mailUser.getPwd(),publickey));
-        user.setBirthday(mailUser.getBirthday());
-        user.setPhone(RSAEncryptUtil.encrypt(mailUser.getPhone(),publickey));
-        user.setResult(mailUser.getResult());
-        user.setAddress(RSAEncryptUtil.encrypt(mailUser.getAddress(),publickey));
-        mailUserMapper.save(user);
+            //创建对象用于加密保存数据/解密修改数据
+            MailUser user = new MailUser();
+            user.setId(mailUser.getId());
+            //加密
+            user.setName(RSAEncryptUtil.encrypt(mailUser.getName(), publickey));
+            user.setSex(mailUser.getSex());
+            user.setEmail(RSAEncryptUtil.encrypt(mailUser.getEmail(), publickey));
+            user.setPwd(RSAEncryptUtil.encrypt(mailUser.getPwd(), publickey));
+            user.setBirthday(mailUser.getBirthday());
+            user.setPhone(RSAEncryptUtil.encrypt(mailUser.getPhone(), publickey));
+            user.setResult(mailUser.getResult());
+            user.setAddress(RSAEncryptUtil.encrypt(mailUser.getAddress(), publickey));
+            mailUserMapper.save(user);
+
     }
 
     //修改用户
     @Override
     @CacheEvict(value = "mailuser",key = "#mailUser.id.toString()")
     public void updateMailUser(MailUser mailUser) throws Exception {
+        //创建对象用于加密保存数据/解密修改数据
+        MailUser user=new MailUser();
                 user.setId(mailUser.getId());
                 //加密
                 user.setName(RSAEncryptUtil.encrypt(mailUser.getName(),publickey));
@@ -67,21 +72,19 @@ public class MailUserServiceImpl implements MailUserService {
                 user.setPhone(RSAEncryptUtil.encrypt(mailUser.getPhone(),publickey));
                 user.setResult(mailUser.getResult());
                 user.setAddress(RSAEncryptUtil.encrypt(mailUser.getAddress(),publickey));
-
                 mailUserMapper.saveAndFlush(user);
     }
 
     //修改多个用户
     @Override
-    public void updateMailUsers(List<MailUser> list) {
-        for (MailUser mailUser: list) {
-            mailUserMapper.saveAndFlush(mailUser);
+    public void updateMailUsers(List<MailUser> list) throws Exception{
+        for (MailUser mu:list) {
+            updateMailUser(mu);
         }
     }
 
     //删除用户
     @Override
-    @CacheEvict(value = "mailuser",key = "#id")
     public void deleteMailUser(Integer id) {
         mailUserMapper.deleteById(id);
 
@@ -89,17 +92,32 @@ public class MailUserServiceImpl implements MailUserService {
     //删除多个用户
     @Override
     public void deleteMailUsers(List<Integer> list) {
+        System.out.println("====================="+list);
         for (int i:list) {
-            mailUserMapper.deleteById(i);
+            deleteMailUser(i);
         }
     }
 
     //查询用户
     @Override
-    @Cacheable(value = "mailuser",key = "#id")
-    public  MailUser queryMailUser(Integer id) {
-        MailUser user = mailUserMapper.getOne(id);
-        return user;
+    public  MailUser queryMailUser(Integer id)throws Exception {
+//        MailUser user=new MailUser();
+        MailUser mailUser = mailUserMapper.getOne(id);
+
+//        user.setId(mailUser.getId());
+//        //解密
+//        user.setName(RSAEncryptUtil.decrypt(mailUser.getName(),privatekey));
+//        user.setSex(mailUser.getSex());
+//        user.setEmail(RSAEncryptUtil.decrypt(mailUser.getEmail(),privatekey));
+//        user.setPwd(RSAEncryptUtil.decrypt(mailUser.getPwd(),privatekey));
+//        user.setBirthday(mailUser.getBirthday());
+//        user.setPhone(RSAEncryptUtil.decrypt(mailUser.getPhone(),privatekey));
+//        user.setResult(mailUser.getResult());
+//        user.setAddress(RSAEncryptUtil.decrypt(mailUser.getAddress(),privatekey));
+//        user.setTopic(mailUser.getTopic());
+//        user.setContent(mailUser.getContent());
+//        mailUserMapper.saveAndFlush(user);
+        return mailUser;
     }
 
     //查询全部用户

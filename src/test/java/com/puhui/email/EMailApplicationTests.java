@@ -4,7 +4,6 @@ package com.puhui.email;
 
 import com.puhui.email.entity.MailUser;
 import com.puhui.email.mapper.MailUserMapper;
-import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.RSAEncryptUtil;
 import org.junit.Test;
@@ -14,9 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sound.midi.Soundbank;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +64,9 @@ public class EMailApplicationTests {
     @Test
     public void  ylhAddUserTest() throws Exception {
         //添加用户
-      //  mailUserService.addMailUser(new MailUser(1,"杨利华","男","2020-01-02","2235662296@qq.com","15285360367","123456","北京",false));
+        MailUser user=new MailUser("杨利华","男","2020-01-02","2235662296@qq.com","15285360367","123456","北京");
+        System.out.println(user);
+        mailUserService.addMailUser(user);
     }
     //删除用户并删除记录
     @Test
@@ -80,31 +78,16 @@ public class EMailApplicationTests {
     @Test
     public void ylhUpdateUserTest() throws Exception {
 
-     //   MailUser user=new MailUser(2,"杨利华","女","2020-01-02","2235662296@qq.com","15285360367","123456","北京",false);
+        MailUser user=new MailUser(6,"杨利华","女","2020-01-02","2235662296@qq.com","15285360367","123456","北京");
         //修改用户(修改id相同的用户)
-   //     mailUserService.updateMailUser(user);
+        mailUserService.updateMailUser(user);
     }
     //查询用户
     @Test
     public void ylhQueryUser() throws Exception {
         //根据id查询
         System.out.println(
-              "=================" + mailUserService.queryMailUser(2)
+                "=================" + mailUserService.queryMailUser(2)
         );
-    }
-
-    /**
-     * 根据姓名查询用户
-     */
-    @Test
-    public void getByName() throws Exception {
-        //查询所有
-        List<MailUser> mailUsers = mailUserService.queryAllMailUser();
-        for (MailUser user:mailUsers) {
-            if (RSAEncryptUtil.decrypt(user.getName(), privateKey).toString().equals("zyx")){
-                System.out.println(user);
-            }
-        }
-
     }
 }

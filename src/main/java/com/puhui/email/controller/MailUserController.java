@@ -2,19 +2,25 @@ package com.puhui.email.controller;
 
 
 import com.puhui.email.entity.MailUser;
+import com.puhui.email.entity.MailUserList;
 import com.puhui.email.service.MailUserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 /**
- * @description:
+ * @description:  controller的curd
  * @author: 杨利华
  * @date: 2020/7/5
  */
 @RestController
+@ResponseBody
 @RequestMapping(value = "/mailUser")
 public class MailUserController {
 
@@ -23,7 +29,9 @@ public class MailUserController {
     MailUserService MailUserService;
 
     //添加用户
+    @ApiOperation("用户添加")
     @PostMapping(value = "/addUser")
+    //在swagger页面添加注释
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户ID", required = false, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String", paramType = "query"),
@@ -47,7 +55,8 @@ public class MailUserController {
     @ApiImplicitParams(
             @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query")
     )
-    public MailUser queryMailUser(Integer id) {
+    @CachePut(value = "mailUser",key = "#MailUser.id.toString()")
+    public MailUser queryMailUser(Integer id) throws Exception {
         MailUser mailUser=MailUserService.queryMailUser(id);
         return mailUser;
     }
@@ -72,11 +81,11 @@ public class MailUserController {
         MailUserService.updateMailUser(mailUser);
     }
     //修改多个用户
-//    @ApiOperation("修改多个用户")
-//    @PutMapping(value = "/upDateUsers")
-//    public void upDateMailUsers(List<MailUser> list){
-//        MailUserService.updateMailUsers(list);
-//    }
+    @ApiOperation("修改多个用户")
+    @PutMapping(value = "/upDateUsers")
+    public void upDateMailUsers(@RequestBody MailUserList list) throws Exception {
+        MailUserService.updateMailUsers(list.getList());
+    }
 
 
     //删除用户
@@ -85,7 +94,12 @@ public class MailUserController {
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query")
     public void deleteMailUser(int id){
         MailUserService.deleteMailUser(id);
-        //邮件记录删除
+    }
+    //删除多个用户
+    @ApiOperation("根据ID删除多个用户")
+    @DeleteMapping(value = "/deletes")
+    public void deleteMailUsers(@RequestParam(value = "list") List<Integer> list){
+        MailUserService.deleteMailUsers(list);
     }
 
 

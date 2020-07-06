@@ -2,7 +2,6 @@ package com.puhui.email.mapper;
 
 import com.puhui.email.entity.MailUser;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**

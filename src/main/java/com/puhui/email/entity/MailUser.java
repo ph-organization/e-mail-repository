@@ -16,8 +16,8 @@ import javax.persistence.*;
  */
 @Data   //相当于加入getset方法
 @AllArgsConstructor  //全参构造方法
-@ToString   //重写tostring方法，引入Lombok简化代码
 @NoArgsConstructor
+@ToString   //重写tostring方法，引入Lombok简化代码
 @Entity
 @Table(name = "mail_user")
 //解决id查询对象出现异常
@@ -55,9 +55,23 @@ public class MailUser {
 
     //用于测试修改用户
     public MailUser(int id,String name,String sex,String birthday,String email,String phone,String pwd,String address) {
+        this.id=id;
+        this.name=name;
+        this.sex=sex;
+        this.birthday=birthday;
+        this.email=email;
+        this.phone=phone;
+        this.pwd=pwd;
+        this.address=address;
     }
     //测试保存用户
     public MailUser(String name,String sex,String birthday,String email,String phone,String pwd,String address) {
+        this.name=name;
+        this.sex=sex;
+        this.birthday=birthday;
+        this.email=email;
+        this.phone=phone;
+        this.pwd=pwd;
+        this.address=address;
     }
-
 }
