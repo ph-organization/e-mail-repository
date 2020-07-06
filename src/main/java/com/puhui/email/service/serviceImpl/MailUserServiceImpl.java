@@ -8,14 +8,11 @@ import com.puhui.email.util.RSAEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description:  邮件用户crud实现
@@ -31,9 +28,6 @@ public class MailUserServiceImpl implements MailUserService {
 
     //创建对象用于加密保存数据/解密修改数据
     MailUser user=new MailUser();
-//
-//    //用于封装随机产生的公钥与私钥
-//    Map<Integer, String> keyMap = new HashMap<Integer, String>();
 
     //公钥加密
     @Value("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHH1oreEIgmlTlKpJJt/gA1FiX6DNbcpHtdeQEvdTHVRUGnZuVxMdNPXG9LiHOGrSjHBjjg4YGfa+Q0nZAnUm1zGul5xTDBrawA+9Qrcp44Hd/6KpHAUq7rmZUGS8TSGwlHF6qyL4x5IH/py85FPSLGbYAOdt6Th3lAwZCXAx0aQIDAQAB")
@@ -45,10 +39,7 @@ public class MailUserServiceImpl implements MailUserService {
 
     //添加用户
     @Override
-    @CachePut(value = "mailuser",key = "#mailUser.id.toString()")
     public void addMailUser(MailUser mailUser) throws Exception{
-
-
         user.setId(mailUser.getId());
         //加密
         user.setName(RSAEncryptUtil.encrypt(mailUser.getName(),publickey));
@@ -66,12 +57,6 @@ public class MailUserServiceImpl implements MailUserService {
     @Override
     @CacheEvict(value = "mailuser",key = "#mailUser.id.toString()")
     public void updateMailUser(MailUser mailUser) throws Exception {
-
-        List<MailUser> userList=queryAllMailUser();
-
-        for (MailUser mu:userList) {
-            if (mu.getId()==mailUser.getId()){
-
                 user.setId(mailUser.getId());
                 //加密
                 user.setName(RSAEncryptUtil.encrypt(mailUser.getName(),publickey));
@@ -82,9 +67,8 @@ public class MailUserServiceImpl implements MailUserService {
                 user.setPhone(RSAEncryptUtil.encrypt(mailUser.getPhone(),publickey));
                 user.setResult(mailUser.getResult());
                 user.setAddress(RSAEncryptUtil.encrypt(mailUser.getAddress(),publickey));
+
                 mailUserMapper.saveAndFlush(user);
-            }
-        }
     }
 
     //修改多个用户

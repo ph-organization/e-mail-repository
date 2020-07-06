@@ -1,8 +1,10 @@
 package com.puhui.email.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -15,41 +17,48 @@ import javax.persistence.*;
 @Data   //相当于加入getset方法
 @AllArgsConstructor  //全参构造方法
 @ToString   //重写tostring方法，引入Lombok简化代码
+@NoArgsConstructor
 @Entity
-@Table(name = "mailuser")
+@Table(name = "mail_user")
+//解决id查询对象出现异常
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class MailUser {
 
+    //用户id
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
+    //用户姓名
     @NotNull
-    @Column
     private String name;
-
-    @Column
+    //用户性别
     private String sex;
-
-    @Column
+    //出生年月
     private String birthday;
-
+    //邮件
     @NotNull
-    @Column
     private String email;
-
-    @Column
+    //手机号
     @NotNull
     private String phone;
-
-    @Column
+    //密码
+    @NotNull
     private String pwd;
-
-    @Column
+    //地址
     private String address;
-
-    @Column
-    private Boolean result;
-
-    public MailUser() {
+    //发送结果
+    private String result;
+    //邮件内容
+    private String content;
+    //邮件主题
+    private String topic;
+    //收件人
+    private String target;
+    //用于测试修改用户
+    public MailUser(int id,String name,String sex,String birthday,String email,String phone,String pwd,String address) {
     }
+    //测试保存用户
+    public MailUser(String name,String sex,String birthday,String email,String phone,String pwd,String address) {
+    }
+
 }

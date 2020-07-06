@@ -68,7 +68,7 @@ public class EMailApplicationTests {
     @Test
     public void  ylhAddUserTest() throws Exception {
         //添加用户
-        mailUserService.addMailUser(new MailUser(1,"杨利华","男","2020-01-02","2235662296@qq.com","15285360367","123456","北京",false));
+      //  mailUserService.addMailUser(new MailUser(1,"杨利华","男","2020-01-02","2235662296@qq.com","15285360367","123456","北京",false));
     }
     //删除用户并删除记录
     @Test
@@ -80,9 +80,9 @@ public class EMailApplicationTests {
     @Test
     public void ylhUpdateUserTest() throws Exception {
 
-        MailUser user=new MailUser(2,"杨利华","女","2020-01-02","2235662296@qq.com","15285360367","123456","北京",false);
+     //   MailUser user=new MailUser(2,"杨利华","女","2020-01-02","2235662296@qq.com","15285360367","123456","北京",false);
         //修改用户(修改id相同的用户)
-        mailUserService.updateMailUser(user);
+   //     mailUserService.updateMailUser(user);
     }
     //查询用户
     @Test

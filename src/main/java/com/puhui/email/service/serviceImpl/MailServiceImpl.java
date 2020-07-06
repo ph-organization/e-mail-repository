@@ -2,6 +2,7 @@ package com.puhui.email.service.serviceImpl;
 
 
 import com.puhui.email.entity.MailUser;
+
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.RSAEncryptUtil;
@@ -41,7 +42,7 @@ public class MailServiceImpl implements MailService {
     private String privateKey;
 
     @Override
-    public void sendSimpleMail(String to, String topic, String content) throws Exception {
+    public void sendSimpleMail(String target, String topic, String content) throws Exception {
         //创建SimpleMailMessage对象
         SimpleMailMessage message = new SimpleMailMessage();
         //设置邮件发送人
@@ -53,35 +54,42 @@ public class MailServiceImpl implements MailService {
 
         //查询出数据库所有用户
         List<MailUser> mailUsers = userService.queryAllMailUser();
+        log.info("查询数据成功");
+
         //遍历查询出需要发送邮件的目标用户
         for (MailUser user : mailUsers) {
-
-            if (RSAEncryptUtil.decrypt(user.getName(), privateKey).toString().equals(to)) {
+            log.info("遍历解密核对用户名");
+            if ((RSAEncryptUtil.decrypt(user.getName(), privateKey)).toString().equals(target)) {
                 //解密后的用户名与需要发送的用户名相同，获取该用户邮箱,并对其进行解密
                 user.getEmail();
-                String email = RSAEncryptUtil.encrypt(user.getEmail(), privateKey).toString();
+
+                log.info("邮箱解密");
+                //对邮箱解密获取原邮箱
+                String email = (RSAEncryptUtil.decrypt(user.getEmail(), privateKey)).toString();
+                log.info("查询解密后获得的目标邮箱是" + email);
                 //邮件接收人
                 message.setTo(email);
-
                 try {
                     //发送邮件
                     mailSender.send(message);
-                    log.info("邮件接收人" + to + "主题" + topic + "内容" + content + "邮件发送成功");
-                    //发送成功后  将数据修改存入数据库
-                    user.setEmail(email);
-                    user.setResult(true);
+                    log.info("邮件接收人" + target + "主题" + topic + "内容" + content + "邮件发送成功");
+                    //发送成功后 ,设置发送结果为true
+                    user.setResult("true");
+                    System.out.println(user);
                     userService.updateMailUser(user);
                 } catch (Exception e) {
-                    user.setResult(false);
+                    user.setResult("false");
                     userService.updateMailUser(user);
-                    log.error("邮件接收人" + to + "主题" + topic + "内容" + content + "邮件发送出现异常");
+                    log.error("邮件接收人" + target + "主题" + topic + "内容" + content + "邮件发送出现异常");
                     log.error("异常信息为" + e.getMessage());
                     log.error("异常堆栈信息为-->");
                     e.printStackTrace();
                 }
+            } else {
+                //目标用户不存在
+                log.error("目标用户不存在");
             }
         }
-
 
     }
 

@@ -25,7 +25,7 @@ public class MailUserController {
     //添加用户
     @PostMapping(value = "/addUser")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "用户ID", required = false, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "sex", value = "性别", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "birthday", value = "出生年月（2020-01-02）", required = true, dataType = "String", paramType = "query"),
@@ -33,7 +33,10 @@ public class MailUserController {
             @ApiImplicitParam(name = "phone", value = "号码", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "pwd", value = "密码", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "address", value = "地址", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "result", value = "发送结果", required = true, dataType = "Boolean", paramType = "query")
+            @ApiImplicitParam(name = "result", value = "发送结果(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "topic", value = "邮件主题(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "target", value = "收件人(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query")
     })
     public void addMailUser(MailUser mailUser) throws Exception {
         MailUserService.addMailUser(mailUser);
@@ -61,13 +64,15 @@ public class MailUserController {
             @ApiImplicitParam(name = "phone", value = "号码", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "pwd", value = "密码", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "address", value = "地址", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "result", value = "发送结果", required = true, dataType = "Boolean", paramType = "query")
+            @ApiImplicitParam(name = "result", value = "发送结果(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "topic", value = "邮件主题(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "target", value = "收件人(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query")
+
     })
     @PutMapping(value = "/upDateUser")
-
     public void upDateMailUser(MailUser mailUser) throws Exception{
         MailUserService.updateMailUser(mailUser);
-        //修改邮件用户时删除邮件记录
     }
     //修改多个用户
 //    @ApiOperation("修改多个用户")
@@ -80,6 +85,7 @@ public class MailUserController {
     //删除用户
     @ApiOperation("根据ID删除")
     @DeleteMapping(value = "/deleteById")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query")
     public void deleteMailUser(int id){
         MailUserService.deleteMailUser(id);
         //邮件记录删除
