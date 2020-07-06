@@ -1,7 +1,9 @@
 package com.puhui.email.controller;
 
 
+import com.puhui.email.entity.MailUser;
 import com.puhui.email.service.MailService;
+import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.BaseResult;
 import com.puhui.email.util.CommonUtil;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +30,8 @@ public class MailController {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private MailUserService userService;
 
     /**
      * 发送简单邮件接口
@@ -41,7 +46,9 @@ public class MailController {
             @ApiImplicitParam (name = "content", value = "邮件内容", required = true, dataType = "String", paramType = "query")})
     @GetMapping ("/mail/sendMail")
     public BaseResult sendSimpleMail(String target, String topic, String content) {
-
+        //查询出数据库所有用户
+        List<MailUser> mailUsers = userService.queryAllMailUser();
+        log.info("查询数据成功");
         try {
             //获取一个随机的标识码，用于标记该用户邮箱
             String code = CommonUtil.getRandomNum();

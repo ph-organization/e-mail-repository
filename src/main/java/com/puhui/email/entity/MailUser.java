@@ -52,8 +52,7 @@ public class MailUser {
     private String content;
     //邮件主题
     private String topic;
-    //收件人
-    private String target;
+
     //用于测试修改用户
     public MailUser(int id,String name,String sex,String birthday,String email,String phone,String pwd,String address) {
     }

@@ -36,7 +36,6 @@ public class MailUserController {
             @ApiImplicitParam(name = "result", value = "发送结果(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "topic", value = "邮件主题(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "target", value = "收件人(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query")
     })
     public void addMailUser(MailUser mailUser) throws Exception {
         MailUserService.addMailUser(mailUser);
@@ -67,8 +66,6 @@ public class MailUserController {
             @ApiImplicitParam(name = "result", value = "发送结果(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "topic", value = "邮件主题(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "target", value = "收件人(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query")
-
     })
     @PutMapping(value = "/upDateUser")
     public void upDateMailUser(MailUser mailUser) throws Exception{

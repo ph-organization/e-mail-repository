@@ -3,6 +3,7 @@ package com.puhui.email.service.serviceImpl;
 
 import com.puhui.email.entity.MailUser;
 
+import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.RSAEncryptUtil;
@@ -30,6 +31,8 @@ public class MailServiceImpl implements MailService {
     private JavaMailSender mailSender;
     @Autowired
     private MailUserService userService;
+    @Autowired
+    private MailUserMapper userMapper;
 
     // 配置文件中的发送者
     @Value ("${mail.fromMail.sender}")
@@ -67,19 +70,28 @@ public class MailServiceImpl implements MailService {
                 //对邮箱解密获取原邮箱
                 String email = (RSAEncryptUtil.decrypt(user.getEmail(), privateKey)).toString();
                 log.info("查询解密后获得的目标邮箱是" + email);
-                //邮件接收人
+                //邮件收件人
                 message.setTo(email);
+                //设置邮件内容
+
+                user.setContent(content);
+                //设置邮件主题
+
+                user.setTopic(topic);
                 try {
                     //发送邮件
                     mailSender.send(message);
                     log.info("邮件接收人" + target + "主题" + topic + "内容" + content + "邮件发送成功");
                     //发送成功后 ,设置发送结果为true
-                    user.setResult("true");
+                    user.setResult("success");
+
                     System.out.println(user);
-                    userService.updateMailUser(user);
+                    //保存用户
+                    userMapper.save(user);
                 } catch (Exception e) {
-                    user.setResult("false");
-                    userService.updateMailUser(user);
+                    user.setResult("failure");
+                    //保存用户
+                    userMapper.save(user);
                     log.error("邮件接收人" + target + "主题" + topic + "内容" + content + "邮件发送出现异常");
                     log.error("异常信息为" + e.getMessage());
                     log.error("异常堆栈信息为-->");
