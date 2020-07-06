@@ -45,7 +45,7 @@ public class MailServiceImpl implements MailService {
     private String privateKey;
 
     @Override
-    public void sendSimpleMail(String target, String topic, String content) throws Exception {
+    public void sendSimpleMail(String email, String topic, String content, MailUser user) throws Exception {
         //创建SimpleMailMessage对象
         SimpleMailMessage message = new SimpleMailMessage();
         //设置邮件发送人
@@ -55,53 +55,34 @@ public class MailServiceImpl implements MailService {
         //设置邮件内容
         message.setText(content);
 
-        //查询出数据库所有用户
-        List<MailUser> mailUsers = userService.queryAllMailUser();
-        log.info("查询数据成功");
+        //邮件收件人
+        message.setTo(email);
+        //设置邮件内容
 
-        //遍历查询出需要发送邮件的目标用户
-        for (MailUser user : mailUsers) {
-            log.info("遍历解密核对用户名");
-            if ((RSAEncryptUtil.decrypt(user.getName(), privateKey)).toString().equals(target)) {
-                //解密后的用户名与需要发送的用户名相同，获取该用户邮箱,并对其进行解密
-                user.getEmail();
+        user.setContent(content);
+        //设置邮件主题
 
-                log.info("邮箱解密");
-                //对邮箱解密获取原邮箱
-                String email = (RSAEncryptUtil.decrypt(user.getEmail(), privateKey)).toString();
-                log.info("查询解密后获得的目标邮箱是" + email);
-                //邮件收件人
-                message.setTo(email);
-                //设置邮件内容
+        user.setTopic(topic);
+        try {
+            //发送邮件
+            mailSender.send(message);
+            log.info("邮件接收人" + email + "主题" + topic + "内容" + content + "邮件发送成功");
+            //发送成功后 ,设置发送结果为true
+            user.setResult("success");
 
-                user.setContent(content);
-                //设置邮件主题
-
-                user.setTopic(topic);
-                try {
-                    //发送邮件
-                    mailSender.send(message);
-                    log.info("邮件接收人" + target + "主题" + topic + "内容" + content + "邮件发送成功");
-                    //发送成功后 ,设置发送结果为true
-                    user.setResult("success");
-
-                    System.out.println(user);
-                    //保存用户
-                    userMapper.save(user);
-                } catch (Exception e) {
-                    user.setResult("failure");
-                    //保存用户
-                    userMapper.save(user);
-                    log.error("邮件接收人" + target + "主题" + topic + "内容" + content + "邮件发送出现异常");
-                    log.error("异常信息为" + e.getMessage());
-                    log.error("异常堆栈信息为-->");
-                    e.printStackTrace();
-                }
-            } else {
-                //目标用户不存在
-                log.error("目标用户不存在");
-            }
+            System.out.println(user);
+            //保存用户
+            userMapper.save(user);
+        } catch (Exception e) {
+            user.setResult("failure");
+            //保存用户
+            userMapper.save(user);
+            log.error("邮件接收人" + email + "主题" + topic + "内容" + content + "邮件发送出现异常");
+            log.error("异常信息为" + e.getMessage());
+            log.error("异常堆栈信息为-->");
+            e.printStackTrace();
         }
+
 
     }
 

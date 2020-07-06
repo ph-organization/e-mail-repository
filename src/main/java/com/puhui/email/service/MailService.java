@@ -1,5 +1,7 @@
 package com.puhui.email.service;
 
+import com.puhui.email.entity.MailUser;
+
 import java.io.File;
 
 /**
@@ -13,7 +15,7 @@ public interface MailService {
      * @param topic    主题
      * @param content    内容
      */
-    public void sendSimpleMail(String to, String topic, String content) throws Exception;
+    public void sendSimpleMail(String to, String topic, String content, MailUser user) throws Exception;
 
     /**
      * 发送带附件的邮件
