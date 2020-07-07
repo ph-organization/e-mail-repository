@@ -4,18 +4,22 @@ package com.puhui.email.service.serviceImpl;
 import com.puhui.email.entity.MailUser;
 import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailUserService;
-import com.puhui.email.util.BaseResult;
+
 import com.puhui.email.util.EncodeUtil;
 import com.puhui.email.util.RSAEncryptUtil;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +47,8 @@ public class MailUserServiceImpl implements MailUserService {
     //获取私钥
     private String privatekey = map.get(2);
 
+    @PersistenceContext
+    private EntityManager manager;
     //添加用户
     @Override
 //    @CachePut(value = "mailUser",key = "#MailUser.id.toString()")
@@ -110,7 +116,14 @@ public class MailUserServiceImpl implements MailUserService {
     @Override
     @Cacheable (value = "mailUser", key = "#id")
     public MailUser queryMailUser(Integer id) throws Exception {
+        Session session = manager.unwrap(Session.class);
         MailUser mailUser = mailUserMapper.getOne(id);
+        mailUser.setEmail(RSAEncryptUtil.decrypt(mailUser.getEmail(),privatekey));
+        mailUser.setName(RSAEncryptUtil.decrypt(mailUser.getName(),privatekey));
+        mailUser.setAddress(RSAEncryptUtil.decrypt(mailUser.getAddress(),privatekey));
+        mailUser.setPhone(RSAEncryptUtil.decrypt(mailUser.getPhone(),privatekey));
+        mailUser.setPwd(RSAEncryptUtil.decrypt(mailUser.getPwd(),privatekey));
+        session.evict(mailUser);
         return mailUser;
     }
 

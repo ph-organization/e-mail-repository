@@ -84,6 +84,8 @@ public class EncodeUtil {
      *放在D盘下的key.txt文件中
      * 第一行是公钥
      * 第二行是私钥
+     *
+     * 先关掉txt自动换行
      * @param args
      */
     public static void main(String[] args) throws Exception {
