@@ -64,11 +64,6 @@ public class SwaggerConfig {
                 new ArrayList());
     }
 
-
-    //注入一个docket对象,配置bean实例
-    public Docket getDocket01(){
-        return new Docket(DocumentationType.SWAGGER_2).groupName("杨利华");
-    }
     @Bean
     public Docket getDocket(Environment environment){
         //设置需要显示的swagger环境
@@ -89,7 +84,7 @@ public class SwaggerConfig {
                  * withClassAnnotation        扫描类上的注解（）
                  */
                 .apis(RequestHandlerSelectors.basePackage("com.puhui.email.controller" ))
-                .paths(PathSelectors.ant("/mail/*"))//只扫描mail有关的接口
+                .paths(PathSelectors.ant("/mail/**"))//只扫描mail有关的接口
                 .build()
                 .groupName("邹玉玺");
 

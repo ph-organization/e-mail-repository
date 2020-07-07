@@ -2,6 +2,7 @@ package com.puhui.email.controller;
 
 
 import com.puhui.email.entity.MailUser;
+
 import com.puhui.email.entity.MailUserList;
 import com.puhui.email.service.MailUserService;
 import io.swagger.annotations.ApiImplicitParam;
