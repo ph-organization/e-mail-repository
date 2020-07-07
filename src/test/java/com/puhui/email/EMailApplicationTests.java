@@ -25,7 +25,7 @@ public class EMailApplicationTests {
      * 邮件用户的crud，redis记录测试
      * 杨利华
      */
-
+    private static Map<Integer, String> map = EncodeUtil.readKey();
     @Autowired
     MailUserService mailUserService;
     @Autowired
@@ -33,11 +33,11 @@ public class EMailApplicationTests {
     @Autowired
     private MailService mailService;
     //配置文件中的公钥
-    @Value ("${rsa.publicKey}")
-    private String publicKey;
+   // @Value ("${rsa.publicKey}")
+    private String publicKey=map.get(1);
     //配置文件中的私钥
-    @Value ("${rsa.privateKey}")
-    private String privateKey;
+  //  @Value ("${rsa.privateKey}")
+    private String privateKey=map.get(2);
 
     /**
      * 邹玉玺
