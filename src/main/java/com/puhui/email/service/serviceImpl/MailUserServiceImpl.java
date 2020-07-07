@@ -7,6 +7,7 @@ import com.puhui.email.service.MailUserService;
 
 import com.puhui.email.util.EncodeUtil;
 import com.puhui.email.util.RSAEncryptUtil;
+import com.puhui.email.util.UserEncryptUtil;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,22 +50,14 @@ public class MailUserServiceImpl implements MailUserService {
 
     @PersistenceContext
     private EntityManager manager;
+
     //添加用户
     @Override
-//    @CachePut(value = "mailUser",key = "#MailUser.id.toString()")
+  //  @CachePut (value = "mailUser", key = "#mailUser.name.toString()")
     public void addMailUser(MailUser mailUser) throws Exception {
         //创建对象用于加密保存数据/解密修改数据
         MailUser user = new MailUser();
-        user.setId(mailUser.getId());
-        //加密
-        user.setName(RSAEncryptUtil.encrypt(mailUser.getName(), publickey));
-        user.setSex(mailUser.getSex());
-        user.setEmail(RSAEncryptUtil.encrypt(mailUser.getEmail(), publickey));
-        user.setPwd(RSAEncryptUtil.encrypt(mailUser.getPwd(), publickey));
-        user.setBirthday(mailUser.getBirthday());
-        user.setPhone(RSAEncryptUtil.encrypt(mailUser.getPhone(), publickey));
-        user.setResult(mailUser.getResult());
-        user.setAddress(RSAEncryptUtil.encrypt(mailUser.getAddress(), publickey));
+        user = UserEncryptUtil.encrytUser(mailUser);
         mailUserMapper.save(user);
 
     }
@@ -75,16 +68,7 @@ public class MailUserServiceImpl implements MailUserService {
     public void updateMailUser(MailUser mailUser) throws Exception {
         //创建对象用于加密保存数据/解密修改数据
         MailUser user = new MailUser();
-        user.setId(mailUser.getId());
-        //加密
-        user.setName(RSAEncryptUtil.encrypt(mailUser.getName(), publickey));
-        user.setSex(mailUser.getSex());
-        user.setEmail(RSAEncryptUtil.encrypt(mailUser.getEmail(), publickey));
-        user.setPwd(RSAEncryptUtil.encrypt(mailUser.getPwd(), publickey));
-        user.setBirthday(mailUser.getBirthday());
-        user.setPhone(RSAEncryptUtil.encrypt(mailUser.getPhone(), publickey));
-        user.setResult(mailUser.getResult());
-        user.setAddress(RSAEncryptUtil.encrypt(mailUser.getAddress(), publickey));
+        user = UserEncryptUtil.encrytUser(mailUser);
         mailUserMapper.saveAndFlush(user);
     }
 
@@ -114,17 +98,13 @@ public class MailUserServiceImpl implements MailUserService {
 
     //查询用户
     @Override
-    @Cacheable (value = "mailUser", key = "#id")
+    @Cacheable (value = "mailUser", key = "#id.toString()")
     public MailUser queryMailUser(Integer id) throws Exception {
         Session session = manager.unwrap(Session.class);
         MailUser mailUser = mailUserMapper.getOne(id);
-        mailUser.setEmail(RSAEncryptUtil.decrypt(mailUser.getEmail(),privatekey));
-        mailUser.setName(RSAEncryptUtil.decrypt(mailUser.getName(),privatekey));
-        mailUser.setAddress(RSAEncryptUtil.decrypt(mailUser.getAddress(),privatekey));
-        mailUser.setPhone(RSAEncryptUtil.decrypt(mailUser.getPhone(),privatekey));
-        mailUser.setPwd(RSAEncryptUtil.decrypt(mailUser.getPwd(),privatekey));
-        session.evict(mailUser);
-        return mailUser;
+        MailUser user = UserEncryptUtil.decryptUser(mailUser);
+        session.evict(user);
+        return user;
     }
 
     @Override

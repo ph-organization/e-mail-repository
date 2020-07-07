@@ -6,6 +6,7 @@ import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.EncodeUtil;
+import com.puhui.email.util.UserEncryptUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +67,8 @@ public class MailServiceImpl implements MailService {
         //设置邮件主题
 
         user.setTopic(topic);
+        //用户加密信息解密
+        MailUser mailUser = UserEncryptUtil.decryptUser(user);
         try {
             //发送邮件
             mailSender.send(message);
@@ -74,12 +77,13 @@ public class MailServiceImpl implements MailService {
             user.setResult("success");
 
             System.out.println(user);
-            //保存用户
-            userMapper.save(user);
+
+
+            userService.updateMailUser(mailUser);
         } catch (Exception e) {
             user.setResult("failure");
             //保存用户
-            userMapper.save(user);
+            userService.updateMailUser(mailUser);
 
             e.printStackTrace();
         }
