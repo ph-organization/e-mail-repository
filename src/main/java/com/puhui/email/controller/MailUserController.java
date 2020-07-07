@@ -33,7 +33,7 @@ public class MailUserController {
     @PostMapping(value = "/addUser")
     //在swagger页面添加注释
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户ID", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "id", value = "用户ID（可不填）", required = false, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "sex", value = "性别", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "birthday", value = "出生年月（2020-01-02）", required = true, dataType = "String", paramType = "query"),
@@ -52,10 +52,8 @@ public class MailUserController {
     //查询用户
     @ApiOperation("根据ID查询")
     @GetMapping(value = "/queryById")
-    @ApiImplicitParams(
-            @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query")
-    )
-    @CachePut(value = "mailUser",key = "#MailUser.id.toString()")
+    @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query")
+
     public MailUser queryMailUser(Integer id) throws Exception {
         MailUser mailUser=MailUserService.queryMailUser(id);
         return mailUser;

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @description:  邮件用户实体
@@ -22,7 +23,7 @@ import javax.persistence.*;
 @Table(name = "mail_user")
 //解决id查询对象出现异常
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class MailUser {
+public class MailUser implements Serializable{
 
     //用户id
     @Id

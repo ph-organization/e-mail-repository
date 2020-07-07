@@ -25,7 +25,8 @@ public interface MailUserService {
     public void deleteMailUsers(List<Integer> list);
     //查询用户
     public MailUser queryMailUser(Integer id) throws Exception;
-
+    //查询所有
     public List<MailUser> queryAllMailUser();
-
+    //记录保到redis
+    public void addCache(MailUser mailUser);
 }

@@ -4,6 +4,7 @@ package com.puhui.email.service.serviceImpl;
 import com.puhui.email.entity.MailUser;
 import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailUserService;
+import com.puhui.email.util.BaseResult;
 import com.puhui.email.util.RSAEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,7 @@ public class MailUserServiceImpl implements MailUserService {
 
     //添加用户
     @Override
+//    @CachePut(value = "mailUser",key = "#MailUser.id.toString()")
     public void addMailUser(MailUser mailUser) throws Exception{
             //创建对象用于加密保存数据/解密修改数据
             MailUser user = new MailUser();
@@ -100,24 +102,21 @@ public class MailUserServiceImpl implements MailUserService {
 
     //查询用户
     @Override
+    @Cacheable(value = "mailUser",key = "#id")
     public  MailUser queryMailUser(Integer id)throws Exception {
-//        MailUser user=new MailUser();
         MailUser mailUser = mailUserMapper.getOne(id);
-
-//        user.setId(mailUser.getId());
-//        //解密
-//        user.setName(RSAEncryptUtil.decrypt(mailUser.getName(),privatekey));
-//        user.setSex(mailUser.getSex());
-//        user.setEmail(RSAEncryptUtil.decrypt(mailUser.getEmail(),privatekey));
-//        user.setPwd(RSAEncryptUtil.decrypt(mailUser.getPwd(),privatekey));
-//        user.setBirthday(mailUser.getBirthday());
-//        user.setPhone(RSAEncryptUtil.decrypt(mailUser.getPhone(),privatekey));
-//        user.setResult(mailUser.getResult());
-//        user.setAddress(RSAEncryptUtil.decrypt(mailUser.getAddress(),privatekey));
-//        user.setTopic(mailUser.getTopic());
-//        user.setContent(mailUser.getContent());
-//        mailUserMapper.saveAndFlush(user);
-        return mailUser;
+            //解密
+            mailUser.setName(RSAEncryptUtil.decrypt(mailUser.getName(),privatekey));
+            mailUser.setEmail(RSAEncryptUtil.decrypt(mailUser.getEmail(),privatekey));
+            mailUser.setPwd(RSAEncryptUtil.decrypt(mailUser.getPwd(),privatekey));
+            mailUser.setPhone(RSAEncryptUtil.decrypt(mailUser.getPhone(),privatekey));
+            mailUser.setAddress(RSAEncryptUtil.decrypt(mailUser.getAddress(),privatekey));
+            return mailUser;
+    }
+    @Override
+    @CachePut(value = "mailuser",key = "#mailUser.id.toString()")
+    public void addCache(MailUser mailUser){
+        mailUserMapper.saveAndFlush(mailUser);
     }
 
     //查询全部用户
@@ -125,4 +124,5 @@ public class MailUserServiceImpl implements MailUserService {
     public List<MailUser> queryAllMailUser() {
         return mailUserMapper.findAll();
     }
+
 }

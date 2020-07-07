@@ -89,7 +89,6 @@ public class MailController {
                     return result;
                 }
             }
-
         }
         //用户不存在
         result.setCode("1");
