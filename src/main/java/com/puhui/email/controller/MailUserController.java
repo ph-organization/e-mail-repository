@@ -47,7 +47,6 @@ public class MailUserController {
             @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
     })
     public void addMailUser(MailUser mailUser) throws Exception {
-        System.out.println(mailUser);
         MailUserService.addMailUser(mailUser);
     }
 

@@ -63,22 +63,18 @@ public class MailServiceImpl implements MailService {
         message.setTo(email);
         //设置邮件内容
 
-        user.setContent(content);
-        //设置邮件主题
 
-        user.setTopic(topic);
         //用户加密信息解密
         MailUser mailUser = UserEncryptUtil.decryptUser(user);
         try {
+            user.setContent(content);
+            //设置邮件主题
+            user.setTopic(topic);
             //发送邮件
             mailSender.send(message);
-
             //发送成功后 ,设置发送结果为true
             user.setResult("success");
-
             System.out.println(user);
-
-
             userService.updateMailUser(mailUser);
         } catch (Exception e) {
             user.setResult("failure");

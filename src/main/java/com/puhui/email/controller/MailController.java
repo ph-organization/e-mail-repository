@@ -54,8 +54,8 @@ public class MailController {
     @ApiOperation ("普通邮件发送接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "target", value = "目标用户名", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "topic", value = "邮件主题(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "topic", value = "邮件主题", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "content", value = "邮件内容", required = false, dataType = "String", paramType = "query"),
     })
     @GetMapping ("/mail/sendMail")
     public BaseResult sendSimpleMail(String target, String topic, String content) throws Exception {

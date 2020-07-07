@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.io.Serializable;
 
 /**
@@ -38,6 +39,7 @@ public class MailUser implements Serializable{
     private String birthday;
     //邮件
     @NotNull
+    @Email (message = "邮箱格式不正确") //表示对应格式是一个邮件
     private String email;
     //手机号
     @NotNull

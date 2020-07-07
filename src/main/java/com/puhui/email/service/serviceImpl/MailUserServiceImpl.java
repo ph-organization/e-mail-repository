@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,12 +65,23 @@ public class MailUserServiceImpl implements MailUserService {
 
     //修改用户
     @Override
-    @CacheEvict (value = "mailuser", key = "#mailUser.id.toString()")
+    @CachePut (value = "mailUser", key = "#mailUser.id.toString()")
     public void updateMailUser(MailUser mailUser) throws Exception {
         //创建对象用于加密保存数据/解密修改数据
         MailUser user = new MailUser();
         user = UserEncryptUtil.encrytUser(mailUser);
         mailUserMapper.saveAndFlush(user);
+    }
+
+    //查询用户
+    @Override
+    @Cacheable (value = "mailUser", key = "#id.toString()")
+    public MailUser queryMailUser(Integer id) throws Exception {
+        Session session = manager.unwrap(Session.class);
+        MailUser mailUser = mailUserMapper.getOne(id);
+        MailUser user = UserEncryptUtil.decryptUser(mailUser);
+        session.evict(user);
+        return user;
     }
 
     //修改多个用户
@@ -79,7 +91,6 @@ public class MailUserServiceImpl implements MailUserService {
             updateMailUser(mu);
         }
     }
-
     //删除用户
     @Override
     public void deleteMailUser(Integer id) {
@@ -96,16 +107,7 @@ public class MailUserServiceImpl implements MailUserService {
         }
     }
 
-    //查询用户
-    @Override
-    @Cacheable (value = "mailUser", key = "#id.toString()")
-    public MailUser queryMailUser(Integer id) throws Exception {
-        Session session = manager.unwrap(Session.class);
-        MailUser mailUser = mailUserMapper.getOne(id);
-        MailUser user = UserEncryptUtil.decryptUser(mailUser);
-        session.evict(user);
-        return user;
-    }
+
 
     @Override
     @CachePut (value = "mailuser", key = "#mailUser.id.toString()")
