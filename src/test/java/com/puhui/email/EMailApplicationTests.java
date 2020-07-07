@@ -5,6 +5,7 @@ import com.puhui.email.entity.MailUser;
 import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
+import com.puhui.email.util.EncodeUtil;
 import com.puhui.email.util.RSAEncryptUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,5 +99,13 @@ public class EMailApplicationTests {
     /**
      * 邮件发送测试
      */
-
+     //获取D盘下text文件中的公钥和私钥
+    @Test
+    public void getKey(){
+        Map<Integer, String> map = EncodeUtil.readKey();
+        String publicKey = map.get(1);
+        System.out.println("公钥是"+publicKey);
+        String privateKey=map.get(2);
+        System.out.println("私钥是"+privateKey);
+    }
 }

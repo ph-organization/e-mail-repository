@@ -6,6 +6,7 @@ import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
 import com.puhui.email.util.BaseResult;
 import com.puhui.email.util.CommonUtil;
+import com.puhui.email.util.EncodeUtil;
 import com.puhui.email.util.RSAEncryptUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @Slf4j
 public class MailController {
+    private static Map<Integer, String> map = EncodeUtil.readKey();
     @Autowired
     private MailService mailService;
 
@@ -35,11 +38,11 @@ public class MailController {
     @Autowired
     private MailUserService userService;
     //配置文件中的公钥
-    @Value ("${rsa.publicKey}")
-    private String publicKey;
+//    @Value ("${rsa.publicKey}")
+    private String publicKey=map.get(1);
     //配置文件中的私钥
-    @Value ("${rsa.privateKey}")
-    private String privateKey;
+  //  @Value ("${rsa.privateKey}")
+    private String privateKey=map.get(2);
 
     /**
      * 发送简单邮件接口

@@ -5,6 +5,7 @@ import com.puhui.email.entity.MailUser;
 import com.puhui.email.mapper.MailUserMapper;
 import com.puhui.email.service.MailService;
 import com.puhui.email.service.MailUserService;
+import com.puhui.email.util.EncodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.Map;
 
 /**
  * @author: 邹玉玺
@@ -24,22 +26,26 @@ import java.io.File;
 @Service
 @Slf4j
 public class MailServiceImpl implements MailService {
+    private static Map<Integer, String> map = EncodeUtil.readKey();
     @Autowired
     private JavaMailSender mailSender;
     @Autowired
     private MailUserService userService;
     @Autowired
     private MailUserMapper userMapper;
-
+//    //配置文件中的公钥
+//    @Value ("${rsa.publicKey}")
+//    private String publicKey;
+//    //配置文件中的私钥
+//    @Value ("${rsa.privateKey}")
+//    private String privateKey;
     // 配置文件中的发送者
     @Value ("${mail.fromMail.sender}")
     private String sender;
-    //配置文件中的公钥
-    @Value ("${rsa.publicKey}")
-    private String publicKey;
-    //配置文件中的私钥
-    @Value ("${rsa.privateKey}")
-    private String privateKey;
+    //过去公钥
+    private String publicKey = map.get(1);
+    //获取私钥
+    private String privateKey = map.get(2);
 
     @Override
     public void sendSimpleMail(String email, String topic, String content, MailUser user) throws Exception {
