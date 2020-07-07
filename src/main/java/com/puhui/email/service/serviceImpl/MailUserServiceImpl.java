@@ -111,12 +111,6 @@ public class MailUserServiceImpl implements MailUserService {
     @Cacheable (value = "mailUser", key = "#id")
     public MailUser queryMailUser(Integer id) throws Exception {
         MailUser mailUser = mailUserMapper.getOne(id);
-        //解密
-        mailUser.setName(RSAEncryptUtil.decrypt(mailUser.getName(), privatekey));
-        mailUser.setEmail(RSAEncryptUtil.decrypt(mailUser.getEmail(), privatekey));
-        mailUser.setPwd(RSAEncryptUtil.decrypt(mailUser.getPwd(), privatekey));
-        mailUser.setPhone(RSAEncryptUtil.decrypt(mailUser.getPhone(), privatekey));
-        mailUser.setAddress(RSAEncryptUtil.decrypt(mailUser.getAddress(), privatekey));
         return mailUser;
     }
 

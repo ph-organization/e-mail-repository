@@ -54,7 +54,6 @@ public class MailUserController {
     @ApiOperation("根据ID查询")
     @GetMapping(value = "/queryById")
     @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "int", paramType = "query")
-
     public MailUser queryMailUser(Integer id) throws Exception {
         MailUser mailUser=MailUserService.queryMailUser(id);
         return mailUser;
