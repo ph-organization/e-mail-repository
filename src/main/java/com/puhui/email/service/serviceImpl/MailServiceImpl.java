@@ -63,7 +63,7 @@ public class MailServiceImpl implements MailService {
         try {
             //发送邮件
             mailSender.send(message);
-            log.info("邮件接收人" + email + "主题" + topic + "内容" + content + "邮件发送成功");
+
             //发送成功后 ,设置发送结果为true
             user.setResult("success");
 
@@ -74,9 +74,7 @@ public class MailServiceImpl implements MailService {
             user.setResult("failure");
             //保存用户
             userMapper.save(user);
-            log.error("邮件接收人" + email + "主题" + topic + "内容" + content + "邮件发送出现异常");
-            log.error("异常信息为" + e.getMessage());
-            log.error("异常堆栈信息为-->");
+
             e.printStackTrace();
         }
 

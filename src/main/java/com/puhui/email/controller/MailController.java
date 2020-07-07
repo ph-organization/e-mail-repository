@@ -49,9 +49,11 @@ public class MailController {
      * @param content 邮件内容
      */
     @ApiOperation ("普通邮件发送接口")
-    @ApiImplicitParams ({@ApiImplicitParam (name = "target", value = "目标用户", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam (name = "topic", value = "邮件主题", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam (name = "content", value = "邮件内容", required = true, dataType = "String", paramType = "query")})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "target", value = "目标用户名", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "topic", value = "邮件主题(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "content", value = "邮件内容(不填，发邮件时获取)", required = false, dataType = "String", paramType = "query"),
+    })
     @GetMapping ("/mail/sendMail")
     public BaseResult sendSimpleMail(String target, String topic, String content) throws Exception {
         //创建一个封装结果的结果集
@@ -89,7 +91,6 @@ public class MailController {
                     return result;
                 }
             }
-
         }
         //用户不存在
         result.setCode("1");
